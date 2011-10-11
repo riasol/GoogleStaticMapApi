@@ -1,38 +1,43 @@
 <?php
-class GoogleStaticMapApi{
+require_once 'GSMA/IUrlPart.php';
+class GoogleStaticMapApi implements IUrlPart{
 	const MAPS_URL='http://maps.googleapis.com/maps/api/staticmap';
-	const FORMAT_PNG16='png16';
-	const FORMAT_PNG8='png8';
-	const FORMAT_GIF='gif';
-	const FORMAT_JPG='jpg';
-	const FORMAT_JPG_BASELINE='jpg-baseline';
-	const MAP_TYPE_ROADMAP='roadmap';
-	const MAP_TYPE_SATELLITE='satellite';
-	const MAP_TYPE_TERRAIN='terrain';
-	const MAP_TYPE_HYBRID='hybrid';
+
+
 	function __construct(){
 		spl_autoload_register(array($this,'autoload'));
 	}
+	/**
+	 * @var LatLng
+	 */
 	private $center;
 	public function setCenter($lngOrLocation){
-
+		$this->center=$lngOrLocation;
 	}
 	private $zoom;
-	public function setZoom($level){
-		//0-21
+	public function setZoom($zoom){
+		$range=array(0,21);
+		if($zoom<$range[0] || $zoom>$range[1]){
+			throw new BadArgumentException("Zoom not in range {$range[0]} - {$range[1]}");
+		}
+		$this->zoom=$zoom;
 	}
-	private $size;
+	private $size=array(200,200);
 	public function setSize($width,$height){
+		$this->size=array($width,$height);
 	}
-	//accept only 2
-	private $scale;
+	//free version accept only 2
+	private $scale=2;
 	public function setScale($scale){
+		$this->scale=$scale;
 	}
 	private $format;
-	public function setFormat($format){
+	public function setFormat(ImageFormat $format){
+		$this->format=$format;
 	}
 
-	public function setMapType($maptype ){
+	public function setMapType(MapType $maptype ){
+
 	}
 	public function setLanguage($language ){
 	}
@@ -40,27 +45,53 @@ class GoogleStaticMapApi{
 	public function addMarker(Marker $marker ){
 		$this->markers[]=$marker;
 	}
-	public function addPath($path ){
+	private $pathes=array();
+	public function addPath(Path $path ){
+		$this->pathes[]=$path;
 	}
+	private $visible=true;
 	public function setVisible($visible ){
+		$this->visible=$visible;
 	}
+	private $styles;
 	public function setStyle($style ){
+		$this->styles[]=$style;
 	}
 	private $sensor=false;
 	public function setSensor($sensorUsed ){
 		$this->sensor=$sensorUsed;
 	}
-	public function toURL(){
-		$ret=GoogleStaticMapApi::MAPS_URL;
-		$ret.='?';
-		return $ret;
+	public function getUrlPart(){
+		$s=GoogleStaticMapApi::MAPS_URL;
+		$s.='?';
+		$s.='&sensor='.($this->sensor?'true':'false');
+		$s.='&size='.$this->size[0].'x'.$this->size[1];
+		if(empty($this->center)){
+			$this->center=new LatLng(50.061822,19.937353);//cracow rynek
+		}
+		if($this->center instanceof LatLng){
+			$s.='&center='.$this->center->getUrlPart();
+		}
+		return $s;
 	}
 	private function autoload($name){
-		$potentialPath=dirname(__FILE__).DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.$name.'.php';
+		$potentialPath=dirname(__FILE__).DIRECTORY_SEPARATOR.'GSMA'.DIRECTORY_SEPARATOR.$name.'.php';
 		if(is_file($potentialPath))	{
 			require_once $potentialPath;
 		}
 	}
 
 }
-
+class MapType {
+	const ROADMAP='roadmap';
+	const SATELLITE='satellite';
+	const TERRAIN='terrain';
+	const HYBRID='hybrid';
+}
+class ImageFormat{
+	const PNG16='png16';
+	const PNG8='png8';
+	const GIF='gif';
+	const JPG='jpg';
+	const JPG_BASELINE='jpg-baseline';
+}
