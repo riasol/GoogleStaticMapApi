@@ -9,6 +9,15 @@ class Marker implements IUrlPart{
 		$this->label=$label;
 	}
 	public function getUrlPart(){
-
+		$s='';
+		if(!empty($this->label)){
+			$s.='label:'.urlencode($this->label).'|';
+		}
+		$ar=array();
+		foreach ($this->locations as $location){
+			$ar[]=$location->getUrlPart();
+		}
+		$s.=join('|',$ar);
+		return $s;
 	}
 }

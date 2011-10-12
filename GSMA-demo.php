@@ -14,10 +14,12 @@ minimal:<br/>
 <?php
 $api=new GoogleStaticMapApi();
 $marker=new Marker();
-$marker->addLocation(new LatLng(50.064192,19.919992));
+$marker->addLocation(new LatLng(50.058516,19.910553));
+$marker->setLabel("Błonia Park");
 $api->addMarker($marker);
+$api->setZoom(12);
 ?>
-with marker:<br/>
+<br/>with marker:<br/>
 <img src="<?php echo $api->getUrlPart();?>"/>
 	</body>
 	</html>
