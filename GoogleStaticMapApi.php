@@ -1,5 +1,5 @@
 <?php
-require_once 'GSMA/IUrlPart.php';
+require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'GSMA'.DIRECTORY_SEPARATOR.'IUrlPart.php';
 class GoogleStaticMapApi implements IUrlPart{
 	const MAPS_URL='http://maps.googleapis.com/maps/api/staticmap';
 
@@ -66,8 +66,11 @@ class GoogleStaticMapApi implements IUrlPart{
 		$s.='?';
 		$s.='&sensor='.($this->sensor?'true':'false');
 		$s.='&size='.$this->size[0].'x'.$this->size[1];
-		if(empty($this->center)){
+		if(empty($this->center) && empty($this->markers)){
 			$this->center=new LatLng(50.061822,19.937353);//cracow rynek
+		}
+		foreach($this->markers as /** @var Marker*/$marker){
+
 		}
 		if($this->center instanceof LatLng){
 			$s.='&center='.$this->center->getUrlPart();
