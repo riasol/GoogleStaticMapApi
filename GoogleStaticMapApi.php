@@ -66,14 +66,17 @@ class GoogleStaticMapApi implements IUrlPart{
 		$s.='?';
 		$s.='&sensor='.($this->sensor?'true':'false');
 		$s.='&size='.$this->size[0].'x'.$this->size[1];
+		if(!empty($this->zoom)){
+			$s.='&zoom='.$this->zoom;
+		}
 		if(!empty($this->markers)){
-			$s.='&markers=';
 			foreach($this->markers as /** @var Marker*/$marker){
+				$s.='&';
 				$s.=$marker->getUrlPart();
 			}
 		}
 		if(empty($this->center) && empty($this->markers)){
-			$this->center=new LatLng(50.061822,19.937353);//cracow rynek
+			$this->center=new LatLng(50.061822,19.937353);//cracow main square
 		}
 		if($this->center instanceof LatLng){
 			$s.='&center='.$this->center->getUrlPart();
