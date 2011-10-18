@@ -16,6 +16,10 @@ class Marker implements IUrlPart{
 		$this->size=$size;
 	}
 	private $color;
+	/**
+	 *
+	 * @param 0x.. or named $color
+	 */
 	public function setColor($color){
 		$this->color=$color;
 	}

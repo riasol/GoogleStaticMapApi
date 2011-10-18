@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'GSMA'.DIRECTORY_SEPARATOR.'IUrlPart.php';
+require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'GoogleStaticMapApiLib'.DIRECTORY_SEPARATOR.'IUrlPart.php';
 class GoogleStaticMapApi implements IUrlPart{
 	const MAPS_URL='http://maps.googleapis.com/maps/api/staticmap';
 
@@ -84,7 +84,7 @@ class GoogleStaticMapApi implements IUrlPart{
 		return $s;
 	}
 	private function autoload($name){
-		$potentialPath=dirname(__FILE__).DIRECTORY_SEPARATOR.'GSMA'.DIRECTORY_SEPARATOR.$name.'.php';
+		$potentialPath=dirname(__FILE__).DIRECTORY_SEPARATOR.'GoogleStaticMapApiLib'.DIRECTORY_SEPARATOR.$name.'.php';
 		if(is_file($potentialPath))	{
 			require_once $potentialPath;
 		}
